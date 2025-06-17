@@ -30,6 +30,7 @@ export default function AppLayout() {
         },
       })}
     >
+      {/* Explicitly define the tab screens */}
       <Tabs.Screen
         name="home"
         options={{
@@ -46,6 +47,14 @@ export default function AppLayout() {
         name="profile"
         options={{
           title: "Profile",
+        }}
+      />
+      {/* We don't include the index route here as it's for redirection */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null, // This hides the tab button
+          unmountOnBlur: true, // Optimizes memory by unmounting when not focused
         }}
       />
     </Tabs>

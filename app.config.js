@@ -1,16 +1,18 @@
 export default {
   expo: {
     name: "Fuse",
-    slug: "fuse",
+    slug: "Fuse",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/images/icon.png",
     scheme: "fuse",
-    userInterfaceStyle: "light",
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true,
     splash: {
-      image: "./assets/splash.png",
+      image: "./assets/images/splash-icon.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff"
+      backgroundColor: "#ffffff",
+      imageWidth: 200,
     },
     assetBundlePatterns: [
       "**/*"
@@ -20,12 +22,15 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
+        foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
-      }
+      },
+      edgeToEdgeEnabled: true
     },
     web: {
-      favicon: "./assets/favicon.png"
+      bundler: "metro",
+      output: "static",
+      favicon: "./assets/images/favicon.png"
     },
     extra: {
       // Add your Firebase config here
@@ -37,7 +42,19 @@ export default {
       firebaseAppId: "YOUR_APP_ID"
     },
     plugins: [
-      "expo-router"
-    ]
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
+    experiments: {
+      typedRoutes: true
+    }
   }
 }; 

@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Text, View, TextInput, TouchableOpacity, Image } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
 import { router } from "expo-router";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -9,20 +8,14 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
   const { login } = useAuth();
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
+    setLoading(true);
+    setError("");
     try {
-      setLoading(true);
-      setError("");
       await login(email, password);
-      router.replace("/(app)");
+      // The root layout will handle redirection to the app group after successful login.
     } catch (error) {
       setError(error.message);
     } finally {
@@ -31,66 +24,47 @@ export default function Login() {
   };
 
   return (
-    <View className="flex-1 bg-purple-50">
-      <StatusBar style="dark" />
-      <View className="flex-1 justify-center px-8">
-        {/* Logo or App Name */}
-        <View className="items-center mb-12">
-          <Text className="text-4xl font-bold text-purple-600 mb-2">Fuse</Text>
-          <Text className="text-gray-500">Welcome back!</Text>
-        </View>
+    <View className="flex-1 items-center justify-center bg-white p-6">
+      <Text className="text-3xl font-bold text-purple-600 mb-8">Login</Text>
 
-        {error ? (
-          <Text className="text-red-500 text-center mb-4">{error}</Text>
-        ) : null}
+      {error ? (
+        <Text className="text-red-500 mb-4 text-center">{error}</Text>
+      ) : null}
 
-        {/* Login Form */}
-        <View className="space-y-4">
-          <View>
-            <Text className="text-gray-700 mb-2">Email</Text>
-            <TextInput
-              className="bg-white p-4 rounded-xl border border-purple-200"
-              placeholder="Enter your email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
+      <TextInput
+        className="w-full p-4 border border-gray-300 rounded-lg mb-4 text-lg"
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <TextInput
+        className="w-full p-4 border border-gray-300 rounded-lg mb-6 text-lg"
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
 
-          <View>
-            <Text className="text-gray-700 mb-2">Password</Text>
-            <TextInput
-              className="bg-white p-4 rounded-xl border border-purple-200"
-              placeholder="Enter your password"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
-          </View>
+      <TouchableOpacity
+        onPress={handleLogin}
+        className={`w-full p-4 rounded-lg flex-row justify-center items-center ${loading ? "bg-gray-400" : "bg-purple-600"}`}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text className="text-white font-semibold text-lg">Login</Text>
+        )}
+      </TouchableOpacity>
 
-          <TouchableOpacity className="items-end">
-            <Text className="text-purple-600">Forgot Password?</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            className="bg-purple-600 p-4 rounded-xl mt-6"
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            <Text className="text-white text-center font-semibold text-lg">
-              {loading ? "Signing in..." : "Sign In"}
-            </Text>
-          </TouchableOpacity>
-
-          <View className="flex-row justify-center mt-6">
-            <Text className="text-gray-500">Don't have an account? </Text>
-            <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
-              <Text className="text-purple-600 font-semibold">Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+      <TouchableOpacity
+        onPress={() => router.push("/(auth)/register")}
+        className="mt-4"
+      >
+        <Text className="text-purple-600 text-base">Don't have an account? Register</Text>
+      </TouchableOpacity>
     </View>
   );
 } 

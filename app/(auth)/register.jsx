@@ -69,7 +69,6 @@ export default function Register() {
       //   createdAt: new Date().toISOString(),
       // });
 
-      router.replace("/(app)");
     } catch (error) {
       setError(error.message);
     } finally {

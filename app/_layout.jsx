@@ -1,12 +1,18 @@
-import { Stack, router, useSegments } from "expo-router";
-import { AuthProvider } from "../contexts/AuthContext";
-import { useAuth } from "../contexts/AuthContext";
+import { Stack, Redirect, useSegments, router } from "expo-router";
+import { AuthProvider, useAuth } from "../contexts/AuthContext";
 import { useEffect } from "react";
 // import { Redirect } from "expo-router"; // Redirect is not needed here anymore
 
 function RootLayoutNav() {
   const { user, loading } = useAuth();
-  const segments = useSegments();
+  const segments = useSegments(); // Get current route segments
+
+  // Log current state for debugging
+  useEffect(() => {
+    console.log("RootLayoutNav - User:", user ? "Authenticated" : "Not Authenticated");
+    console.log("RootLayoutNav - Loading:", loading);
+    console.log("RootLayoutNav - Segments:", segments);
+  }, [user, loading, segments]);
 
   useEffect(() => {
     // Only perform redirect after authentication state has finished loading
@@ -21,19 +27,26 @@ function RootLayoutNav() {
         router.replace("/(auth)/login");
       }
     }
-  }, [user, loading, segments]); // Added segments to the dependency array
+  }, [user, loading, segments]);
 
-  // While loading the authentication state, show nothing or a loading indicator
+  // Show a loading screen or null while authentication state is being determined
   if (loading) {
-    return null; // Or a loading component
+    return null; // Or a custom loading component
   }
 
-  // Define the stack with both authentication and app route groups
-  // The useEffect hook will handle the initial redirection
+  // If a user is logged in, show the app group
+  if (user) {
+    return (
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(app)" />
+      </Stack>
+    );
+  }
+
+  // If no user is logged in, show the auth group
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(app)" />
     </Stack>
   );
 }
